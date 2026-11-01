@@ -25,6 +25,10 @@ int main(void) {
     // trim newline, for print control and strcmp()
     input[strcspn(input, "\n")] = '\0';
 
+    // ignore empty case (optional)
+    if (strcmp(input, "") == 0)
+      continue;
+
     // adjust history
     if (count < MAX_INPUTS) { // history not full yet
       history[count] = strdup(input);
@@ -43,6 +47,14 @@ int main(void) {
       for (int i = 0; i < count; i++) {
         printf("%s\n", history[i]);
       }
+    }
+
+    // clear condition (optional)
+    if (strcmp(input, "clear") == 0) {
+      for (int i = 0; i < count; i++) {
+        free(history[i]);
+      }
+      count = 0;
     }
 
     free(input);
