@@ -22,7 +22,7 @@ int main(void) {
       break;
     }
 
-    // trim newline
+    // trim newline, for print control and strcmp()
     input[strcspn(input, "\n")] = '\0';
 
     // adjust history
@@ -32,7 +32,7 @@ int main(void) {
 
     } else { // history is full, shift array
       free(history[0]);
-      for (int i = 0; i < MAX_INPUTS - 2; i++) {
+      for (int i = 0; i < MAX_INPUTS - 1; i++) {
         history[i] = history[i + 1];
       }
       history[MAX_INPUTS - 1] = strdup(input);
@@ -40,7 +40,13 @@ int main(void) {
 
     // print condition
     if (strcmp(input, "print") == 0) {
+      for (int i = 0; i < count; i++) {
+        printf("%s\n", history[i]);
+      }
     }
+
     free(input);
   }
+
+  return 0;
 }
