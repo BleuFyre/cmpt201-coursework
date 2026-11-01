@@ -13,22 +13,23 @@ int main() {
     size_t size = 0;
 
     printf("Enter programs to run.\n> ");
-    if (getline(&command, &size, stdin) == -1) { // error handling
-                                                 // how to trim newline?
-      free(command);
+    if (getline(&command, &size, stdin) == -1) { // read line
+      free(command); // "should be freed by the user program even on failure"
       break;
     }
 
+    command[strcspn(command, "\n")] = '\0'; // remove newline character
     pid_t pid = fork();
-    if (pid == 0) {
-      // child process
+
+    if (pid == 0) {                   // child process
       execlp(command, command, NULL); // command replaces child
-                                      // possible error from execlp?
-    } else {
-      // parent process
+      perror("execlp failed\n");
+      exit(EXIT_FAILURE);
+
+    } else { // parent process
       int status = 0;
       if (waitpid(pid, &status, 0) == -1) { // wait for child
-        perror("waitpid");
+        perror("waitpid failed\n");
         exit(EXIT_FAILURE);
       }
 
@@ -39,7 +40,7 @@ int main() {
       }
     }
 
-    free(command);
+    free(command); // allocated by getline
   }
 
   return 0;
